@@ -2,4 +2,7 @@
 .DS_Store
 .vscode/
 __pycache__
-*.pyc
+*.pyccheckpoints/
+.ipynb_checkpoints
+checkpoints/
+tensorboards/
