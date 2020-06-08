@@ -87,7 +87,11 @@ def train(rank, num_epochs, world_size):
     # overall task a more selective loss would be more appropriate, however this training script
     # is merely a benchmark so we'll just use simple cross-entropy loss
     criterion = nn.CrossEntropyLoss()
-    optimizer = Adam(model.parameters())
+
+    # NEW
+    # Since we are computing the average of several batches at once (an effective batch size of
+    # world_size * batch_size) we scale the learning rate to match.
+    optimizer = Adam(model.parameters(), lr=1e-3 * world_size)
     
     writer = SummaryWriter(f'/spell/tensorboards/model_2')
         
