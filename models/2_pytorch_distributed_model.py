@@ -68,12 +68,9 @@ def get_model():
     )
 
 def train(rank, num_epochs, world_size):
+    # NEW
+    init_process(rank, world_size)
     print(f"Rank {rank}/{world_size} training process initialized.\n")
-    assert world_size
-    
-    model = get_model()
-    model.cuda(rank)
-    model.train()
 
     # NEW
     # Since this is a single-instance multi-GPU training script, it's important that only one
@@ -90,12 +87,14 @@ def train(rank, num_epochs, world_size):
         get_model()
     dist.barrier()
     print(f"Rank {rank}/{world_size} training process passed data download barrier.\n")
-    
-    # NEW
-    init_process(rank, world_size)
-    
+
+    model = get_model()
+        
     # NEW
     model = DistributedDataParallel(model, device_ids=[rank])
+
+    model.cuda(rank)
+    model.train()
     
     dataloader = get_dataloader(rank, world_size)
     
