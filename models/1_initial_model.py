@@ -92,4 +92,4 @@ def train(NUM_EPOCHS):
             os.mkdir('/spell/checkpoints/')
         torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
 
-train(5)
+train(20)
