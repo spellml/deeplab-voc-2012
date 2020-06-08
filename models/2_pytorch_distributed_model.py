@@ -74,6 +74,22 @@ def train(rank, num_epochs, world_size):
     model = get_model()
     model.cuda(rank)
     model.train()
+
+    # NEW
+    # Since this is a single-instance multi-GPU training script, it's important that only one
+    # process handle downloading of the data, to:
+    #
+    # * Avoid race conditions implicit in having multiple processes attempt to write to the same
+    #   file simultaneously.
+    # * Avoid downloading the data in multiple processes simultaneously.
+    #
+    # Since the data is cached on disk, we can construct and discard the dataloader and model in
+    # the master process only to get the data. The other processes are held back by the barrier.
+    if rank == 0:
+        get_dataloader(rank, world_size)
+        get_model()
+    dist.barrier()
+    print(f"Rank {rank}/{world_size} training process passed data download barrier.\n")
     
     # NEW
     init_process(rank, world_size)
