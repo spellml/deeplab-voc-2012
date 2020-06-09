@@ -22,3 +22,15 @@ spell run --machine-type v100x8 \
   --tensorboard-dir /spell/tensorboards/model_2/ \
   "python models/2_pytorch_distributed_model.py"
 ```
+```bash
+spell run --machine-type v100x4 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_3/ \
+  "python models/3_pytorch_distributed_threaded.py"
+```
+```bash
+spell run --machine-type v100x8 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_3/ \
+  "python models/3_pytorch_distributed_threaded.py"
+```
