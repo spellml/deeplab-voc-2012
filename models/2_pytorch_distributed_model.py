@@ -70,7 +70,7 @@ def get_model():
 def train(rank, num_epochs, world_size):
     # NEW
     init_process(rank, world_size)
-    print(f"Rank {rank}/{world_size} training process initialized.\n")
+    print(f"Rank {rank + 1}/{world_size} training process initialized.\n")
 
     # NEW
     # Since this is a single-instance multi-GPU training script, it's important that only one
@@ -86,7 +86,7 @@ def train(rank, num_epochs, world_size):
         get_dataloader(rank, world_size)
         get_model()
     dist.barrier()
-    print(f"Rank {rank}/{world_size} training process passed data download barrier.\n")
+    print(f"Rank {rank + 1}/{world_size} training process passed data download barrier.\n")
 
     model = get_model()
     model.cuda(rank)
@@ -102,10 +102,7 @@ def train(rank, num_epochs, world_size):
     # is merely a benchmark so we'll just use simple cross-entropy loss
     criterion = nn.CrossEntropyLoss()
 
-    # NEW
-    # Since we are computing the average of several batches at once (an effective batch size of
-    # world_size * batch_size) we scale the learning rate to match.
-    optimizer = Adam(model.parameters(), lr=1e-3 * world_size)
+    optimizer = Adam(model.parameters(), lr=1e-3)
     
     writer = SummaryWriter(f'/spell/tensorboards/model_2')
         
@@ -126,7 +123,7 @@ def train(rank, num_epochs, world_size):
             curr_loss = loss.item()
             if i % 10 == 0:
                 print(
-                    f'Finished epoch {epoch}, rank {rank}/{world_size}, batch {i}. '
+                    f'Finished epoch {epoch}, rank {rank + 1}/{world_size}, batch {i}. '
                     f'Loss: {curr_loss:.3f}.\n'
                 )
             if rank == 0:
@@ -134,7 +131,7 @@ def train(rank, num_epochs, world_size):
             losses.append(curr_loss)
 
         print(
-            f'Finished epoch {epoch}, rank {rank}/{world_size}. '
+            f'Finished epoch {epoch}, rank {rank + 1}/{world_size}. '
             f'Avg Loss: {np.mean(losses)}; Median Loss: {np.min(losses)}.\n'
         )
         
