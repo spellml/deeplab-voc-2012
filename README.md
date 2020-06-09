@@ -7,15 +7,18 @@ To run on Spell:
 ```bash
 spell run --machine-type v100 \
   --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_1/ \
   "python models/1_initial_model.py"
 ```
 ```bash
 spell run --machine-type v100x4 \
   --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_2/ \
   "python models/2_pytorch_distributed_model.py"
 ```
 ```bash
 spell run --machine-type v100x8 \
   --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_2/ \
   "python models/2_pytorch_distributed_model.py"
 ```
