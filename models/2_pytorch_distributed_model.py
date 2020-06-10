@@ -89,12 +89,11 @@ def train(rank, num_epochs, world_size):
     print(f"Rank {rank}/{world_size} training process passed data download barrier.\n")
 
     model = get_model()
-        
-    # NEW
-    model = DistributedDataParallel(model, device_ids=[rank])
-
     model.cuda(rank)
     model.train()
+
+    # NEW
+    model = DistributedDataParallel(model, device_ids=[rank])
     
     dataloader = get_dataloader(rank, world_size)
     
