@@ -81,22 +81,24 @@ def train(NUM_EPOCHS):
             optimizer.step()
 
             curr_loss = loss.item()
-            if i % 10 == 0:
-                print(
-                    f'Finished epoch {epoch}, batch {i}. Loss: {curr_loss:.3f}.'
-                )
+            # if i % 10 == 0:
+            #     print(
+            #         f'Finished epoch {epoch}, batch {i}. Loss: {curr_loss:.3f}.'
+            #     )
 
             writer.add_scalar(
                 'training loss', curr_loss, epoch * len(dataloader) + i
             )
             losses.append(curr_loss)
 
-        print(
-            f'Finished epoch {epoch}. '
-            f'avg loss: {np.mean(losses)}; median loss: {np.min(losses)}'
-        )
-        if not os.path.exists('/spell/checkpoints/'):
-            os.mkdir('/spell/checkpoints/')
-        torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
+        # print(
+        #     f'Finished epoch {epoch}. '
+        #     f'avg loss: {np.mean(losses)}; median loss: {np.min(losses)}'
+        # )
+        if epoch % 5 == 0:
+            if not os.path.exists('/spell/checkpoints/'):
+                os.mkdir('/spell/checkpoints/')
+            torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
+    torch.save(model.state_dict(), f'/spell/checkpoints/model_final.pth')
 
 train(20)
