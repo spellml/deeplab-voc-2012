@@ -63,7 +63,7 @@ model = nn.DataParallel(model)
 model.cuda()
 model.train()
 
-writer = SummaryWriter(f'/spell/tensorboards/model_1')
+writer = SummaryWriter(f'/spell/tensorboards/model_4')
 
 # since the background class doesn't matter nearly as much as the classes of interest to the
 # overall task a more selective loss would be more appropriate, however this training script
