@@ -9,11 +9,6 @@ from torch.optim import Adam
 from torch.utils.tensorboard import SummaryWriter
 import horovod.torch as hvd
 
-_PascalVOCSegmentationDataset = torchvision.datasets.VOCSegmentation(
-    '/mnt/pascal_voc_segmentation/', year='2012', image_set='train', download=True,
-    transform=None, target_transform=None, transforms=None
-)
-
 # VOCSegmentation returns a raw dataset: images are non-resized and in the PIL format. To transform them
 # to something suitable for input to PyTorch, we need to wrap the output in our own dataset class.
 class PascalVOCSegmentationDataset(Dataset):
@@ -40,35 +35,38 @@ class PascalVOCSegmentationDataset(Dataset):
         
         return img, segmap
 
-dataset = PascalVOCSegmentationDataset(_PascalVOCSegmentationDataset)
-# NEW
-# Distributed sampler.
-sampler = torch.utils.data.distributed.DistributedSampler(
-    dataset, num_replicas=hvd.size(), rank=hvd.rank()
-)
-dataloader = DataLoader(
-    dataset, batch_size=8 * torch.cuda.device_count(), shuffle=False, sampler=sampler
-)
+def get_dataloader():
+    _PascalVOCSegmentationDataset = torchvision.datasets.VOCSegmentation(
+        '/mnt/pascal_voc_segmentation/', year='2012', image_set='train', download=True,
+        transform=None, target_transform=None, transforms=None
+    )
+    dataset = PascalVOCSegmentationDataset(_PascalVOCSegmentationDataset)
+    # NEW
+    # Distributed sampler.
+    sampler = torch.utils.data.distributed.DistributedSampler(
+        dataset, num_replicas=hvd.size(), rank=hvd.rank()
+    )
+    dataloader = DataLoader(
+        dataset, batch_size=8, shuffle=False, sampler=sampler
+    )
+    
+    return dataloader
 
-# num_classes is 22. PASCAL VOC includes 20 classes of interest, 1 background class, and the 1
-# special border class mentioned in the previous comment. 20 + 1 + 1 = 22.
-DeepLabV3 = torchvision.models.segmentation.deeplabv3_resnet101(
-    pretrained=False, progress=True, num_classes=22, aux_loss=None
-)
-model = DeepLabV3
+def get_model():
+    # num_classes is 22. PASCAL VOC includes 20 classes of interest, 1 background class, and the 1
+    # special border class mentioned in the previous comment. 20 + 1 + 1 = 22.
+    DeepLabV3 = torchvision.models.segmentation.deeplabv3_resnet101(
+        pretrained=False, progress=True, num_classes=22, aux_loss=None
+    )
+    model = DeepLabV3
 
-# NEW
-model = nn.DataParallel(model)
+    # NEW
+    model = nn.DataParallel(model)
 
-model.cuda()
-model.train()
-
-writer = SummaryWriter(f'/spell/tensorboards/model_4')
-
-# since the background class doesn't matter nearly as much as the classes of interest to the
-# overall task a more selective loss would be more appropriate, however this training script
-# is merely a benchmark so we'll just use simple cross-entropy loss
-criterion = nn.CrossEntropyLoss()
+    model.cuda()
+    model.train()
+    
+    return model
 
 def train(NUM_EPOCHS):
     # NEW:
@@ -117,6 +115,16 @@ if __name__ == '__main__':
     hvd.init()
     torch.cuda.set_device(hvd.local_rank())
     torch.set_num_threads(1)
+    
+    writer = SummaryWriter(f'/spell/tensorboards/model_4')
+
+    # since the background class doesn't matter nearly as much as the classes of interest to the
+    # overall task a more selective loss would be more appropriate, however this training script
+    # is merely a benchmark so we'll just use simple cross-entropy loss
+    criterion = nn.CrossEntropyLoss()
+    
+    model = get_model()
+    dataloader = get_dataloader()
     
     # NEW:
     # Scale learning learning rate by size.
