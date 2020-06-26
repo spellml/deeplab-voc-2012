@@ -34,3 +34,31 @@ spell run --machine-type v100x8 \
   --tensorboard-dir /spell/tensorboards/model_3/ \
   "python models/3_pytorch_distributed_threaded.py"
 ```
+```bash
+spell run --machine-type v100x4 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_4/ \
+  --distributed 1 \
+  "python models/4_pytorch_distributed_horovod.py"
+```
+```bash
+spell run --machine-type v100x8 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_4/ \
+  --distributed 1 \
+  "python models/4_pytorch_distributed_horovod.py"
+```
+```bash
+spell run --machine-type v100 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_4/ \
+  --distributed 4 \
+  "python models/4_pytorch_distributed_horovod.py"
+```
+```bash
+spell run --machine-type v100x4 \
+  --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
+  --tensorboard-dir /spell/tensorboards/model_4/ \
+  --distributed 8 \
+  "python models/4_pytorch_distributed_horovod.py"
+```
