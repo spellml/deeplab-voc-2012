@@ -50,7 +50,7 @@ def get_dataloader():
         dataset, batch_size=8, shuffle=False, sampler=sampler
     )
     
-    return dataloader
+    return dataloader, sampler
 
 def get_model():
     # num_classes is 22. PASCAL VOC includes 20 classes of interest, 1 background class, and the 1
@@ -69,11 +69,11 @@ def get_model():
     return model
 
 def train(NUM_EPOCHS):
-    # NEW:
-    # set epoch to sampler for shuffling.
-    sampler.set_epoch(epoch)
-    
     for epoch in range(1, NUM_EPOCHS + 1):
+        # NEW:
+        # set epoch to sampler for shuffling.
+        sampler.set_epoch(epoch)
+        
         losses = []
 
         for i, (batch, segmap) in enumerate(dataloader):
@@ -131,9 +131,12 @@ if __name__ == '__main__':
     hvd.join()
     print(f"Rank {hvd.rank() + 1}/{hvd.size()} process cleared download barrier.")
     
+    model = get_model()
+    dataloader, sampler = get_dataloader()
+    
     # NEW:
     # Scale learning learning rate by size.
-    optimizer = optim.Adam(model.parameters(), lr=0.001 * hvd.size())
+    optimizer = Adam(model.parameters(), lr=0.001 * hvd.size())
 
     # New:
     # Broadcast parameters & optimizer state.
