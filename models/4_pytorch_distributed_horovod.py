@@ -59,10 +59,6 @@ def get_model():
         pretrained=False, progress=True, num_classes=22, aux_loss=None
     )
     model = DeepLabV3
-
-    # NEW
-    model = nn.DataParallel(model)
-
     model.cuda()
     model.train()
     
