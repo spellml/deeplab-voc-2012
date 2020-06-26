@@ -56,7 +56,7 @@ spell run --machine-type v100 \
   "python models/4_pytorch_distributed_horovod.py"
 ```
 ```bash
-spell run --machine-type v100x4 \
+spell run --machine-type v100 \
   --github-url https://github.com/ResidentMario/spell-deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_4/ \
   --distributed 8 \
