@@ -123,8 +123,13 @@ if __name__ == '__main__':
     # is merely a benchmark so we'll just use simple cross-entropy loss
     criterion = nn.CrossEntropyLoss()
     
-    model = get_model()
-    dataloader = get_dataloader()
+    # NEW:
+    # Download the data on only one thread. Have the rest wait until the download finishes.
+    if hvd.rank() == 0:
+        get_model()
+        get_dataloader()
+    hvd.join()
+    print(f"Rank {hvd.rank() + 1}/{hvd.size()} process cleared download barrier.")
     
     # NEW:
     # Scale learning learning rate by size.
