@@ -97,7 +97,7 @@ def train(NUM_EPOCHS):
         #     f'Finished epoch {epoch}. '
         #     f'avg loss: {np.mean(losses)}; median loss: {np.min(losses)}'
         # )
-        if hvd.rank()hvd.rank() == 0 and epoch % 5 == 0:
+        if hvd.rank() == 0 and epoch % 5 == 0:
             if not os.path.exists('/spell/checkpoints/'):
                 os.mkdir('/spell/checkpoints/')
             torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
