@@ -89,16 +89,15 @@ def train(NUM_EPOCHS):
             #         f'Finished epoch {epoch}, batch {i}. Loss: {curr_loss:.3f}.'
             #     )
 
-            writer.add_scalar(
-                'training loss', curr_loss, epoch * len(dataloader) + i
-            )
+            if hvd.rank() == 0:
+                writer.add_scalar('training loss', curr_loss)
             losses.append(curr_loss)
 
         # print(
         #     f'Finished epoch {epoch}. '
         #     f'avg loss: {np.mean(losses)}; median loss: {np.min(losses)}'
         # )
-        if epoch % 5 == 0:
+        if hvd.rank()hvd.rank() == 0 and epoch % 5 == 0:
             if not os.path.exists('/spell/checkpoints/'):
                 os.mkdir('/spell/checkpoints/')
             torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
@@ -121,7 +120,7 @@ if __name__ == '__main__':
     
     # NEW:
     # Download the data on only one thread. Have the rest wait until the download finishes.
-    if hvd.rank() == 0:
+    if hvd.local_rank() == 0:
         get_model()
         get_dataloader()
     hvd.join()
@@ -132,7 +131,7 @@ if __name__ == '__main__':
     
     # NEW:
     # Scale learning learning rate by size.
-    optimizer = Adam(model.parameters(), lr=0.001 * hvd.size())
+    optimizer = Adam(model.parameters(), lr=1e-3 * hvd.size())
 
     # New:
     # Broadcast parameters & optimizer state.
