@@ -101,7 +101,8 @@ def train(NUM_EPOCHS):
             if not os.path.exists('/spell/checkpoints/'):
                 os.mkdir('/spell/checkpoints/')
             torch.save(model.state_dict(), f'/spell/checkpoints/model_{epoch}.pth')
-    torch.save(model.state_dict(), f'/spell/checkpoints/model_final.pth')
+    if hvd.rank() == 0:
+        torch.save(model.state_dict(), f'/spell/checkpoints/model_final.pth')
 
     
 if __name__ == '__main__':
