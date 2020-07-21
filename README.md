@@ -1,4 +1,4 @@
-# deeplab-voc-2012
+# deeplab-voc-2012 <a href="https://web.spell.ml/workspace_create?workspaceName=deeplab-voc-2012&githubUrl=https%3A%2F%2Fgithub.com%2Fspellml%2Fdeeplab-voc-2012"><img src=https://spell.ml/badge.svg height=20px/></a>
 
 `pytorch` scripts training DeeplabV3 (trained from scratch) on the PASCAL VOC 2012 Segmentation dataset for 20 epochs. The model architecture and data are taken from the PyTorch pretrained models and example data, respectively (`torchvision.models.segmentation.deeplabv3_resnet101` and `torchvision.datasets.VOCSegmentation`). This training script is useful for benchmarking large-scale CNN training jobs.
 
