@@ -43,7 +43,7 @@ class PascalVOCSegmentationDataset(Dataset):
 
 def download_dataloader(shouldDownload=False):
     return torchvision.datasets.VOCSegmentation(
-        "/mnt/pascal_voc_segmentation/",
+        "mnt/pascal_voc_segmentation/",
         year="2012",
         image_set="train",
         download=shouldDownload,
