@@ -6,19 +6,19 @@ To run on Spell:
 
 ```bash
 spell run --machine-type v100 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_1/ \
   "python models/1_initial_model.py"
 ```
 ```bash
 spell run --machine-type v100x4 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_2/ \
   "python models/2_pytorch_distributed_model.py"
 ```
 ```bash
 spell run --machine-type v100x8 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_2/ \
   "python models/2_pytorch_distributed_model.py"
 ```
@@ -30,7 +30,7 @@ spell run --machine-type v100x4 \
 ```
 ```bash
 spell run --machine-type v100x8 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_3/ \
   "python models/3_pytorch_distributed_threaded.py"
 ```
@@ -43,21 +43,21 @@ spell run --machine-type v100x4 \
 ```
 ```bash
 spell run --machine-type v100x8 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_4/ \
   --distributed 1 \
   "python models/4_pytorch_distributed_horovod.py"
 ```
 ```bash
 spell run --machine-type v100 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_4/ \
   --distributed 4 \
   "python models/4_pytorch_distributed_horovod.py"
 ```
 ```bash
 spell run --machine-type v100 \
-  --github-url https://github.com/spellrun/spell-deeplab-voc-2012.git \
+  --github-url https://github.com/spellml/deeplab-voc-2012.git \
   --tensorboard-dir /spell/tensorboards/model_4/ \
   --distributed 8 \
   "python models/4_pytorch_distributed_horovod.py"
